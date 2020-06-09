@@ -9,3 +9,9 @@ Class {
 	],
 	#category : #ReportGenerator
 }
+
+{ #category : #'as yet unclassified' }
+REGModule >> numberOfFunctions [
+	functions ifEmpty: [ ^ 0 ].
+	^ functions size
+]

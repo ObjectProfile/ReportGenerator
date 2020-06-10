@@ -76,6 +76,18 @@ void foo(void) {
 ]
 
 { #category : #tests }
+REGModelTest >> testAddExample [
+
+	| m |
+	m := REGModel new.
+	m addSrcMLXML: self codeExample.
+	
+	self assert: m numberOfModules equals: 2.	
+	self assert: m numberOfFunctions equals: 2.
+	self assert: m numberOfHeaders equals: 1
+]
+
+{ #category : #tests }
 REGModelTest >> testEmpty [
 
 	| m |

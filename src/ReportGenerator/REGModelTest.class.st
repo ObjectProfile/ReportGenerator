@@ -30,6 +30,15 @@ REGModelTest >> codeExample [
 </block_content>}</block></function>
 </unit>
 
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C" filename="myOtherModule.h" hash="1f0eb46e6820e7c193fdb8d7953f90016894cf01"><cpp:ifndef>#<cpp:directive>ifndef</cpp:directive> <name>MYOTHERMODULE_H</name></cpp:ifndef>
+<cpp:define>#<cpp:directive>define</cpp:directive> <cpp:macro><name>MYOTHERMODULE_H</name></cpp:macro></cpp:define>
+
+<function_decl><type><name>void</name></type> <name>foo</name><parameter_list>(<parameter><decl><type><name>void</name></type></decl></parameter>)</parameter_list>;</function_decl>
+
+<cpp:endif>#<cpp:directive>endif</cpp:directive></cpp:endif>
+
+</unit>
+
 </unit>
 '
 ]
@@ -83,6 +92,12 @@ REGModelTest >> testAddExample [
 	m addSrcMLXML: self codeExample.
 	
 	self assert: m numberOfModules equals: 2.	
+		
+	self assert: m modules size equals: 2.
+	self assert: m modules first filename equals: 'main.c'.
+	self assert: m modules second filename equals: 'myOtherModule.c'.
+	self assert: m modules first functions size equals: 1.
+	
 	self assert: m numberOfFunctions equals: 2.
 	self assert: m numberOfHeaders equals: 1
 ]

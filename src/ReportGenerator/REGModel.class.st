@@ -26,12 +26,24 @@ REGModel >> addUnitAsXML: xml [
 	m filename: (xml attributeAt: 'filename').
 	m includes: (xml allElementsSelect: [ :x | x name = 'cpp:include' ]).
 	m metrics at: #LOC put: xml printString lines size.
-	m functions: (xml allElementsSelect: [ :x | x name = 'function' ]).
+
+	(xml allElementsSelect: [ :x | x name = 'function' ]) do: [ :fXML |
+		m addFunction: (self createFunctionFromXML: fXML) ].
+	
 	
 	(#('.C' '.c' '.cpp') anySatisfy: [ :p | m filename endsWith: p ])
 		ifTrue: [ modules add: m ]
 		ifFalse: [ headers add: m ]
 	
+]
+
+{ #category : #'private - XML' }
+REGModel >> createFunctionFromXML: xml [
+	| f |
+	f := REGFunction new.
+	f name: (xml elementAt: 'name') nodes first string.
+	f numberOfLinesOfCode: xml asString lines size.
+	^ f
 ]
 
 { #category : #examples }

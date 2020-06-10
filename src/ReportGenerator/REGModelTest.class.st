@@ -99,7 +99,9 @@ REGModelTest >> testAddExample [
 	self assert: m modules first functions size equals: 1.
 	
 	self assert: m numberOfFunctions equals: 2.
-	self assert: m numberOfHeaders equals: 1
+	self assert: m numberOfHeaders equals: 1.
+	
+	self assert: m modules first numberOfLinesOfCode equals: 9
 ]
 
 { #category : #tests }

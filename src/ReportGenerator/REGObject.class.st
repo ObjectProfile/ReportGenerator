@@ -12,3 +12,8 @@ REGObject >> metrics [
 	metrics ifNil: [ metrics := Dictionary new ].
 	^ metrics
 ]
+
+{ #category : #accessing }
+REGObject >> numberOfLinesOfCode: aNumber [
+	self metrics at: #LOC put: aNumber
+]

@@ -10,7 +10,11 @@ Class {
 
 { #category : #public }
 REGModel >> addSrcMLXML: xml [
+	"xml as string
 	
+	Using:
+	srcml *.{c,h} -o example.xml
+	"
 	| units |
 	units := (XMLDOMParser parse: xml) document
 		descendantNodesSelect: [ :x | (x class ~~ XMLString) and: [ x name = 'unit' and: [ x attributes includesKey: 'filename' ] ] ].
@@ -47,10 +51,28 @@ REGModel >> createFunctionFromXML: xml [
 ]
 
 { #category : #examples }
+REGModel >> exampleSmall [
+	<script: 'self new exampleSmall inspect'>
+
+	| m |
+	m := REGModel new.
+	m addSrcMLXML: REGModelTest new codeExample.
+	^ m
+]
+
+{ #category : #examples }
 REGModel >> exampleUVent [
 
 	| uventPath |
 	uventPath := '/Users/alexandrebergel/Dropbox/GitRepos/u-vent'.
+]
+
+{ #category : #visualization }
+REGModel >> gtInspectorViewIn: composite [
+	<gtInspectorPresentationOrder: -10>
+	composite roassal3
+		title: 'View';
+		initializeCanvas: [ self visualize ]
 ]
 
 { #category : #accessing }
@@ -81,7 +103,39 @@ REGModel >> numberOfHeaders [
 	^ headers size
 ]
 
+{ #category : #metrics }
+REGModel >> numberOfLinesOfCode [
+	| units |
+	units := self modules, self headers.
+	units ifEmpty: [ ^ self ].
+	^ (units collect: #numberOfLinesOfCode) sum
+]
+
 { #category : #'public - metrics' }
 REGModel >> numberOfModules [
 	^ modules size
+]
+
+{ #category : #visualization }
+REGModel >> visualize [
+
+	| c ms |
+	c := RSCanvas new.
+	
+	ms := RSGroup new.
+	self modules do: [ :m |
+		ms add: (RSBox new model: m).
+	].
+
+	RSNormalizer size
+		shapes: ms;
+		from: 10; to: 50;
+		normalize: #numberOfLinesOfCode.
+
+	ms @ RSLabeled @ RSDraggable.
+	c addAll: ms.
+	
+	
+	RSGridLayout on: ms.
+	^ c
 ]

@@ -20,10 +20,14 @@ REGModelTest >> codeExample [
 </block_content>}</block></function>
 </unit>
 
-<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C" filename="myOtherModule.c" hash="16be462d400d4ffb881a261da2277508434bf182"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;stdio.h&gt;</cpp:file></cpp:include>
+<unit xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C" filename="myOtherModule.c" hash="3eda10fdf9dc0fd6d6ac778fb6ae2bda1aea9083"><cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;stdio.h&gt;</cpp:file></cpp:include>
 
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"myOtherModule.h"</cpp:file></cpp:include>
 
+
+<comment type="block">/*
+   this is a comment
+*/</comment>
 
 <function><type><name>void</name></type> <name>foo</name><parameter_list>(<parameter><decl><type><name>void</name></type></decl></parameter>)</parameter_list> <block>{<block_content>
   <expr_stmt><expr><call><name>printf</name><argument_list>(<argument><expr><literal type="string">"Hello World!\n"</literal></expr></argument>)</argument_list></call></expr>;</expr_stmt>
@@ -78,6 +82,10 @@ REGModelTest >> codeMyOtherModuleC [
 #include "myOtherModule.h"
 
 
+/*
+   this is a comment
+*/
+
 void foo(void) {
   printf("Hello World!\n");
 }
@@ -101,7 +109,8 @@ REGModelTest >> testAddExample [
 	self assert: m numberOfFunctions equals: 2.
 	self assert: m numberOfHeaders equals: 1.
 	
-	self assert: m modules first numberOfLinesOfCode equals: 9
+	self assert: m modules first numberOfLinesOfCode equals: 9.
+	self assert: m numberOfLinesOfCode equals: 30.
 ]
 
 { #category : #tests }

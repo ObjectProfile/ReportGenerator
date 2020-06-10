@@ -147,23 +147,26 @@ REGModel >> resolve [
 { #category : #visualization }
 REGModel >> visualize [
 
-	| c ms |
+	| c units |
 	c := RSCanvas new.
 	
-	ms := RSGroup new.
+	units := RSGroup new.
 	self modules do: [ :m |
-		ms add: (RSBox new model: m).
+		units add: (RSBox new model: m).
+	].
+
+	self headers do: [ :m |
+		units add: (RSBox new model: m; color: Color pink lighter lighter lighter).
 	].
 
 	RSNormalizer size
-		shapes: ms;
+		shapes: units;
 		from: 10; to: 50;
 		normalize: #numberOfLinesOfCode.
 
-	ms @ RSLabeled @ RSDraggable.
-	c addAll: ms.
+	units @ (RSLabeled new text: [ :m | m filename ]; highlightable) @ RSDraggable.
+	c addAll: units.
 	
-	
-	RSGridLayout on: ms.
+	RSGridLayout on: units.
 	^ c
 ]

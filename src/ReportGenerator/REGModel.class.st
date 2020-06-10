@@ -28,7 +28,10 @@ REGModel >> addUnitAsXML: xml [
 	| m |
 	m := REGModule new.
 	m filename: (xml attributeAt: 'filename').
-	m includes: (xml allElementsSelect: [ :x | x name = 'cpp:include' ]).
+	
+	(xml allElementsSelect: [ :x | x name = 'cpp:include' ]) do: [ :iXML |
+		m addInclude: (self createIncludeFromXML: iXML) ].
+	
 	m metrics at: #LOC put: xml printString lines size.
 
 	(xml allElementsSelect: [ :x | x name = 'function' ]) do: [ :fXML |
@@ -48,6 +51,14 @@ REGModel >> createFunctionFromXML: xml [
 	f name: (xml elementAt: 'name') nodes first string.
 	f numberOfLinesOfCode: xml asString lines size.
 	^ f
+]
+
+{ #category : #'private - XML' }
+REGModel >> createIncludeFromXML: xml [
+	| i |
+	i := REGImport new.
+	i name: (xml findElementNamed: 'cpp:file') nodes first string.
+	^ i
 ]
 
 { #category : #examples }
@@ -114,6 +125,23 @@ REGModel >> numberOfLinesOfCode [
 { #category : #'public - metrics' }
 REGModel >> numberOfModules [
 	^ modules size
+]
+
+{ #category : #public }
+REGModel >> resolve [
+
+	| d |
+	d := Dictionary new.
+	modules, headers do: [ :unit | 
+		d at: unit filename put: unit ].
+	
+	modules, headers do: [ :unit | 
+		unit includes do: [ :i |
+			i fromUnit: unit.
+			(d includesKey: i rawName) ifTrue: [ i toUnit: (d at: i rawName) ]
+		]
+	].
+
 ]
 
 { #category : #visualization }

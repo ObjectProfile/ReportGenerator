@@ -1,6 +1,6 @@
 Class {
 	#name : #REGHeader,
-	#superclass : #REGObject,
+	#superclass : #REGUnit,
 	#instVars : [
 		'module'
 	],

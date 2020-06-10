@@ -121,3 +121,21 @@ REGModelTest >> testEmpty [
 	self assert: m numberOfModules equals: 0.	
 	self assert: m numberOfFunctions equals: 0.
 ]
+
+{ #category : #tests }
+REGModelTest >> testImport [
+
+	| m moduleMain header |
+	m := REGModel new.
+	m addSrcMLXML: self codeExample.
+
+	moduleMain := m modules first.
+	self assert: moduleMain filename equals: 'main.c'.
+	self assert: (moduleMain numberOfIncludes) equals: 2.
+	self assert: (moduleMain includes collect: #name) asArray equals: #('<stdio.h>' '"myOtherModule.h"').
+	m resolve.
+	
+	header := m headers first.
+	self assert: (moduleMain doesImport: header)
+	
+]

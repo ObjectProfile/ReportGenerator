@@ -136,6 +136,6 @@ REGModelTest >> testImport [
 	m resolve.
 	
 	header := m headers first.
-	self assert: (moduleMain doesImport: header)
+	self assert: (moduleMain doesInclude: header)
 	
 ]

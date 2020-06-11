@@ -14,7 +14,7 @@ REGUnit >> addInclude: anInclude [
 ]
 
 { #category : #'public - testing' }
-REGUnit >> doesImport: aUnit [
+REGUnit >> doesInclude: aUnit [
 
 	^ includes anySatisfy: [ :i | i toUnit == aUnit ]
 ]
@@ -48,4 +48,9 @@ REGUnit >> initialize [
 { #category : #'as yet unclassified' }
 REGUnit >> numberOfIncludes [
 	^ includes size
+]
+
+{ #category : #'as yet unclassified' }
+REGUnit >> outgoingUnits [
+	^ self includes collect: #toUnit
 ]

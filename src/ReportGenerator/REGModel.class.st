@@ -68,14 +68,21 @@ REGModel >> exampleSmall [
 	| m |
 	m := REGModel new.
 	m addSrcMLXML: REGModelTest new codeExample.
+	m resolve.
 	^ m
 ]
 
 { #category : #examples }
 REGModel >> exampleUVent [
+	<script: 'self new exampleUVent inspect'>
 
-	| uventPath |
-	uventPath := '/Users/alexandrebergel/Dropbox/GitRepos/u-vent'.
+	| uventPath m |
+	uventPath := '/Users/alexandrebergel/Dropbox/GitRepos/u-vent/example.xml'.
+	
+	m := REGModel new.
+	m addSrcMLXML: uventPath asFileReference contents.
+	m resolve.
+	^ m
 ]
 
 { #category : #visualization }
@@ -147,7 +154,7 @@ REGModel >> resolve [
 { #category : #visualization }
 REGModel >> visualize [
 
-	| c units |
+	| c units eb |
 	c := RSCanvas new.
 	
 	units := RSGroup new.
@@ -164,7 +171,14 @@ REGModel >> visualize [
 		from: 10; to: 50;
 		normalize: #numberOfLinesOfCode.
 
-	units @ (RSLabeled new text: [ :m | m filename ]; highlightable) @ RSDraggable.
+	eb := RSEdgeBuilder arrowedLineWithOffset: 0.2.
+	eb canvas: c.
+	eb shapes: units.
+	eb connectToAll: #outgoingUnits.
+
+	"units @ (RSLabeled new text: [ :m | m filename ]; highlightable) @ RSDraggable."
+	units @ (RSLabeled new text: [ :m | m filename ]) @ RSDraggable.
+	units @ (RSHighlightable new withEdges; highlightColor: Color red).
 	c addAll: units.
 	
 	RSGridLayout on: units.

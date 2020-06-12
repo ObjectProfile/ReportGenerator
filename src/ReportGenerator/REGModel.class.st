@@ -46,6 +46,11 @@ REGModel >> addUnitAsXML: xml [
 	
 ]
 
+{ #category : #accessing }
+REGModel >> allIncludes [
+	^ self modules, self headers flatCollect: #includes
+]
+
 { #category : #'private - XML' }
 REGModel >> createClassFromXML: xml [
 	| c nameXML fullname |
@@ -101,6 +106,14 @@ REGModel >> exampleUVent [
 ]
 
 { #category : #visualization }
+REGModel >> gtInspectorMissingIncludesIn: composite [
+	<gtInspectorPresentationOrder: -10>
+	composite text
+		title: 'Missing Includes';
+		display: [ self missingIncludeFiles ]
+]
+
+{ #category : #visualization }
 REGModel >> gtInspectorViewIn: composite [
 	<gtInspectorPresentationOrder: -10>
 	composite roassal3
@@ -118,6 +131,15 @@ REGModel >> initialize [
 	super initialize.
 	modules := OrderedCollection new.
 	headers := OrderedCollection new.
+]
+
+{ #category : #public }
+REGModel >> missingIncludeFiles [
+
+	| unresolvedIncludes names |
+	unresolvedIncludes := self allIncludes select: [ :i | i toUnit isNil ].
+	names := (unresolvedIncludes collect: #rawName as: Set) asSortedCollection.
+	^ ', ' join: names
 ]
 
 { #category : #accessing }
@@ -202,6 +224,8 @@ REGModel >> visualize [
 	units @ (RSHighlightable new withEdges; highlightColor: Color red).
 	c addAll: units.
 	
-	RSGridLayout on: units.
+	"RSGridLayout on: units."
+	RSForceBasedLayout new charge: -800; on: units.
+	c @ RSCanvasController.
 	^ c
 ]

@@ -2,10 +2,16 @@ Class {
 	#name : #REGModule,
 	#superclass : #REGUnit,
 	#instVars : [
-		'functions'
+		'functions',
+		'classes'
 	],
 	#category : #ReportGenerator
 }
+
+{ #category : #adding }
+REGModule >> addClass: aClass [
+	classes add: aClass
+]
 
 { #category : #adding }
 REGModule >> addFunction: aFunction [
@@ -23,7 +29,13 @@ REGModule >> functions [
 { #category : #initialization }
 REGModule >> initialize [
 	super initialize.
-	functions := OrderedCollection new
+	functions := OrderedCollection new.
+	classes := OrderedCollection new
+]
+
+{ #category : #'public - metrics' }
+REGModule >> numberOfClasses [
+	^ classes size
 ]
 
 { #category : #'as yet unclassified' }

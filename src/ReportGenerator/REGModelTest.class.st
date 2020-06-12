@@ -5,6 +5,38 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
+REGModelTest >> codeCPP [
+
+^ '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<unit xmlns="http://www.srcML.org/srcML/src" xmlns:cpp="http://www.srcML.org/srcML/cpp" revision="1.0.0" language="C++" filename="main.cpp"><comment type="line">// classes example</comment>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;iostream&gt;</cpp:file></cpp:include>
+<using>using <namespace>namespace <name>std</name>;</namespace></using>
+
+<class>class <name>Rectangle</name> <block>{<private type="default">
+    <decl_stmt><decl><type><name>int</name></type> <name>width</name></decl>, <decl><type ref="prev"/><name>height</name></decl>;</decl_stmt>
+  </private><public>public:
+    <function_decl><type><name>void</name></type> <name>set_values</name> <parameter_list>(<parameter><decl><type><name>int</name></type></decl></parameter>,<parameter><decl><type><name>int</name></type></decl></parameter>)</parameter_list>;</function_decl>
+    <function><type><name>int</name></type> <name>area</name><parameter_list>()</parameter_list> <block>{<block_content><return>return <expr><name>width</name><operator>*</operator><name>height</name></expr>;</return></block_content>}</block></function>
+</public>}</block>;</class>
+
+<function><type><name>void</name></type> <name><name>Rectangle</name><operator>::</operator><name>set_values</name></name> <parameter_list>(<parameter><decl><type><name>int</name></type> <name>x</name></decl></parameter>, <parameter><decl><type><name>int</name></type> <name>y</name></decl></parameter>)</parameter_list> <block>{<block_content>
+  <expr_stmt><expr><name>width</name> <operator>=</operator> <name>x</name></expr>;</expr_stmt>
+  <expr_stmt><expr><name>height</name> <operator>=</operator> <name>y</name></expr>;</expr_stmt>
+</block_content>}</block></function>
+
+<function><type><name>int</name></type> <name>main</name> <parameter_list>()</parameter_list> <block>{<block_content>
+  <decl_stmt><decl><type><name>Rectangle</name></type> <name>rect</name></decl>;</decl_stmt>
+  <expr_stmt><expr><call><name><name>rect</name><operator>.</operator><name>set_values</name></name> <argument_list>(<argument><expr><literal type="number">3</literal></expr></argument>,<argument><expr><literal type="number">4</literal></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+  <expr_stmt><expr><name>cout</name> <operator>&lt;&lt;</operator> <literal type="string">"area: "</literal> <operator>&lt;&lt;</operator> <call><name><name>rect</name><operator>.</operator><name>area</name></name><argument_list>()</argument_list></call></expr>;</expr_stmt>
+  <expr_stmt><expr><name>cout</name> <operator>&lt;&lt;</operator> <literal type="string">"\n"</literal></expr>;</expr_stmt>
+  <return>return <expr><literal type="number">0</literal></expr>;</return>
+</block_content>}</block></function>
+
+</unit>
+'
+]
+
+{ #category : #'as yet unclassified' }
 REGModelTest >> codeExample [
 
 ^'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -111,6 +143,23 @@ REGModelTest >> testAddExample [
 	
 	self assert: m modules first numberOfLinesOfCode equals: 9.
 	self assert: m numberOfLinesOfCode equals: 30.
+]
+
+{ #category : #tests }
+REGModelTest >> testCPP [
+
+	| m moduleMain |
+	m := REGModel new.
+	m addSrcMLXML: self codeCPP.
+
+	moduleMain := m modules first.
+	self assert: moduleMain filename equals: 'main.cpp'.
+	self assert: (moduleMain numberOfIncludes) equals: 1.
+	self assert: (moduleMain includes collect: #name) asArray equals: #('<iostream>').
+	m resolve.
+	
+	self assert: (m headers isEmpty).
+	self assert: m numberOfClasses equals: 1
 ]
 
 { #category : #tests }

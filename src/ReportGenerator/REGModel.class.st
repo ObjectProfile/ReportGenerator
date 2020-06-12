@@ -28,6 +28,9 @@ REGModel >> addUnitAsXML: xml [
 	| m |
 	m := REGModule new.
 	m filename: (xml attributeAt: 'filename').
+
+	(xml allElementsSelect: [ :x | x name = 'class' ]) do: [ :iXML |
+		m addClass: (self createClassFromXML: iXML) ].
 	
 	(xml allElementsSelect: [ :x | x name = 'cpp:include' ]) do: [ :iXML |
 		m addInclude: (self createIncludeFromXML: iXML) ].
@@ -37,18 +40,30 @@ REGModel >> addUnitAsXML: xml [
 	(xml allElementsSelect: [ :x | x name = 'function' ]) do: [ :fXML |
 		m addFunction: (self createFunctionFromXML: fXML) ].
 	
-	
-	(#('.C' '.c' '.cpp') anySatisfy: [ :p | m filename endsWith: p ])
+	(#('.C' '.c' '.cpp' '.CPP') anySatisfy: [ :p | m filename endsWith: p ])
 		ifTrue: [ modules add: m ]
 		ifFalse: [ headers add: m ]
 	
 ]
 
 { #category : #'private - XML' }
+REGModel >> createClassFromXML: xml [
+	| c nameXML fullname |
+	c := REGClass new.
+	nameXML := xml elementAt: 'name'.
+	fullname := '' join: ((nameXML allNodes select: [ :x | x class == XMLString ]) collect: #asString).
+	c name: fullname.
+	^ c
+	
+]
+
+{ #category : #'private - XML' }
 REGModel >> createFunctionFromXML: xml [
-	| f |
+	| f nameXML fullNameString |
+	nameXML := xml elementAt: 'name'.
+	fullNameString := '' join: ((nameXML allNodes select: [ :x | x class == XMLString ]) collect: #asString).
 	f := REGFunction new.
-	f name: (xml elementAt: 'name') nodes first string.
+	f name: fullNameString.
 	f numberOfLinesOfCode: xml asString lines size.
 	^ f
 ]
@@ -111,6 +126,12 @@ REGModel >> modules [
 ]
 
 { #category : #'public - metrics' }
+REGModel >> numberOfClasses [
+	modules ifEmpty: [ ^ 0 ].
+	^ (modules collect: #numberOfClasses) sum
+]
+
+{ #category : #'public - metrics' }
 REGModel >> numberOfFunctions [
 	modules ifEmpty: [ ^ 0 ].
 	^ (modules collect: #numberOfFunctions) sum
@@ -121,7 +142,7 @@ REGModel >> numberOfHeaders [
 	^ headers size
 ]
 
-{ #category : #metrics }
+{ #category : #'public - metrics' }
 REGModel >> numberOfLinesOfCode [
 	| units |
 	units := self modules, self headers.

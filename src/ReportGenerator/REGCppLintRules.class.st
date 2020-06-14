@@ -38,6 +38,14 @@ REGCppLintRules >> fromString: aString [
 	^ rules
 ]
 
+{ #category : #visualization }
+REGCppLintRules >> gtInspectorViewIn: composite [
+	<gtInspectorPresentationOrder: -10>
+	composite text
+		title: 'Summary';
+		display: [ self summaryAsString ]
+]
+
 { #category : #'instance creation' }
 REGCppLintRules >> initialize [
 	super initialize.
@@ -78,4 +86,26 @@ REGCppLintRules >> rules [
 { #category : #accessing }
 REGCppLintRules >> rules: anObject [
 	rules := anObject
+]
+
+{ #category : #visualization }
+REGCppLintRules >> summaryAsMarkdown [
+
+	| d t |
+	d := rules groupedBy: #description.
+	t := (d associations sortedAs: [ :ass | ass value size ]) reversed.
+	
+	t := (t collect: [ :as | as value size asString, '|', as key]).
+	t := {'Nb Occurence|Description' . '---|---' }, t.
+	^ String lf join: t
+]
+
+{ #category : #visualization }
+REGCppLintRules >> summaryAsString [
+
+	| d t |
+	d := rules groupedBy: #description.
+	t := (d associations sortedAs: [ :ass | ass value size ]) reversed.
+	
+	^ String lf join: (t collect: [ :as | as value size asString, ': ', as key])
 ]

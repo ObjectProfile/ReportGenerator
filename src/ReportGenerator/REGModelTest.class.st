@@ -175,10 +175,15 @@ REGModelTest >> testCPP [
 { #category : #'tests - cpplint' }
 REGModelTest >> testCppLint [
 
-	| rules |
+	| rules r |
 	rules := REGCppLintRules new fromString: self codeCppLint.
 	
-	self assert: rules size equals: 5
+	self assert: rules size equals: 5.
+	
+	r := rules first. 
+	self assert: r file equals: '/Users/alexandrebergel/Dropbox/GitRepos/u-vent/DumbSpeedControl.cpp'.
+	self assert: r lineOfCode equals: 0.
+	self assert: r description equals: 'No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"  [legal/copyright] [5]'.
 ]
 
 { #category : #tests }

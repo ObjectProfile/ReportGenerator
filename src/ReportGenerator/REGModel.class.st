@@ -46,6 +46,12 @@ REGModel >> addUnitAsXML: xml [
 	
 ]
 
+{ #category : #'public - metrics' }
+REGModel >> allFunctions [
+	modules ifEmpty: [ ^ #() ].
+	^ modules flatCollect: #functions
+]
+
 { #category : #accessing }
 REGModel >> allIncludes [
 	^ self modules, self headers flatCollect: #includes

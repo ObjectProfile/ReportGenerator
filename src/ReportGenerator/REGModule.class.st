@@ -43,8 +43,3 @@ REGModule >> numberOfFunctions [
 	functions ifNil: [ ^ 0 ].
 	^ functions size
 ]
-
-{ #category : #'public - metrics' }
-REGModule >> numberOfLinesOfCode [
-	^ self metrics at: #LOC
-]

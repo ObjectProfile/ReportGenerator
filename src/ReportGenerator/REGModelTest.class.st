@@ -37,6 +37,16 @@ REGModelTest >> codeCPP [
 ]
 
 { #category : #'as yet unclassified' }
+REGModelTest >> codeCppLint [
+^ 'Ignoring /Users/alexandrebergel/Dropbox/GitRepos/u-vent/Bambu_ventilator.ino; not a valid file name (cuh, cxx, cu, hpp, cc, c, hxx, hh, h++, cpp, h, c++)
+/Users/alexandrebergel/Dropbox/GitRepos/u-vent/DumbSpeedControl.cpp:0:  No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"  [legal/copyright] [5]
+/Users/alexandrebergel/Dropbox/GitRepos/u-vent/DumbSpeedControl.cpp:1:  Weird number of spaces at line-start.  Are you using a 2-space indent?  [whitespace/indent] [3]
+/Users/alexandrebergel/Dropbox/GitRepos/u-vent/DumbSpeedControl.cpp:1:  Line ends in whitespace.  Consider deleting these extra spaces.  [whitespace/end_of_line] [4]
+/Users/alexandrebergel/Dropbox/GitRepos/u-vent/DumbSpeedControl.cpp:9:  Use int16/int64/etc, rather than the C type long  [runtime/int] [4]
+/Users/alexandrebergel/Dropbox/GitRepos/u-vent/DumbSpeedControl.cpp:10:  Use int16/int64/etc, rather than the C type long  [runtime/int] [4]'
+]
+
+{ #category : #'as yet unclassified' }
 REGModelTest >> codeExample [
 
 ^'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -160,6 +170,15 @@ REGModelTest >> testCPP [
 	
 	self assert: (m headers isEmpty).
 	self assert: m numberOfClasses equals: 1
+]
+
+{ #category : #'tests - cpplint' }
+REGModelTest >> testCppLint [
+
+	| rules |
+	rules := REGCppLintRules new fromString: self codeCppLint.
+	
+	self assert: rules size equals: 5
 ]
 
 { #category : #tests }
